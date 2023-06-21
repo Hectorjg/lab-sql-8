@@ -1,0 +1,38 @@
+#Query 1.-
+select title, dense_rank() over(order by length) from sakila.film
+where length is not null and length > 0 ;
+
+#Query 2.-
+select title, rating, dense_rank() over(partition by rating order by length) from sakila.film
+where length is not null and length > 0 ;
+
+#Query 3.-
+select category.name, count(film_category.film_id) as no_of_films
+from sakila.category
+join sakila.film_category
+on category.category_id = film_category.category_id
+group by category.name;
+
+#Query 4.-
+select actor.actor_id, concat(first_name, ' ' ,last_name) as actors_name, count(film_id) no_film from sakila.actor
+join sakila.film_actor
+on actor.actor_id = film_actor.actor_id
+group by actor_id, first_name, last_name
+order by no_film desc;
+
+#Query 5.-
+select customer.customer_id,customer.first_name, customer.last_name, count(rental_id) as no_rentals
+from sakila.customer
+join sakila.rental
+on customer.customer_id = rental.customer_id
+group by customer_id, first_name, last_name
+order by no_rentals desc;
+
+#BONUS Query.-
+select film.film_id, film.title, count(rental_id) as no_rentals from sakila.film
+join sakila.inventory
+on film.film_id = inventory.film_id
+join sakila.rental on
+rental.inventory_id = inventory.inventory_id
+group by film_id,title
+order by no_rentals desc;
